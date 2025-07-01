@@ -1,20 +1,33 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from uuid import uuid4
-from reading_service.db import table
-from reading_service.models.Reading import ReadingCreate, ReadingResponse, ReadingUpdate
+from decimal import Decimal
+from db import table
+from models.Reading import ReadingCreate, ReadingResponse, ReadingUpdate
 
 
 readingRouter = APIRouter()
 
 
 #Create new reading
-@readingRouter.post("/reading", response_model=ReadingResponse)
+@readingRouter.post("/readings", response_model=ReadingResponse)
 async def create_reading(reading: ReadingCreate):
     reading_id=str(uuid4())
-    reading={"id": reading_id, **reading.model_dump()}
-    table.put_item(Item=reading)
-    return reading
+    reading_data=reading.model_dump()
+    
+    reading_data["id"] = reading_id
+    reading_data["timestamp"] = reading.timestamp.isoformat()
+    reading_data["glucose_level"] = Decimal(str(reading_data["glucose_level"]))
+    print("Saving item to DynamoDB:", reading_data)
+
+    table.put_item(Item=reading_data)
+    return reading_data
+
+    #reading_id=str(uuid4())
+    #reading_item={"id": reading_id, **reading.model_dump()}
+    #print("Saving item to DynamoDB:", reading_item)
+    #table.put_item(Item=reading_item)
+    #return reading_item
 
 
 #Get all readings

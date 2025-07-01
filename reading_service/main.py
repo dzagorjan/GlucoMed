@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from reading_service.routers import readings
+from routers import readings
 
 
 app = FastAPI()
