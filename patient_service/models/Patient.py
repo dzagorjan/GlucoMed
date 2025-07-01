@@ -9,7 +9,7 @@ class PatientBase(BaseModel):
     gender: Optional[Literal['Male','Female','Other']] = Field('Other', description = "Gender of the patient, Male, Female or Other")
     email: Optional[EmailStr] = Field(None, description = "Email of the patient")
     phone: Optional[str] = Field(None, description = "Patient's phone number")
-    adress: Optional[str] = Field(None, description = "Patient's adress")
+    address: Optional[str] = Field(None, description = "Patient's address")
 
 
 class PatientCreate(PatientBase):
@@ -26,5 +26,5 @@ class PatientUpdate(BaseModel):
     gender: Optional[str]
     email: Optional[EmailStr]
     phone: Optional[str]
-    adress: Optional[str]
+    address: Optional[str]
     

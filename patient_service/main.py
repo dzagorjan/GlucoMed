@@ -1,5 +1,8 @@
 from fastapi import FastAPI
-from patient_service.routers import patients
+from routers import patients
+#from dotenv import load_dotenv
+
+#load_dotenv()
 
 
 app = FastAPI()
