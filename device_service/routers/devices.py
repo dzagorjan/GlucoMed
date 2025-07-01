@@ -1,21 +1,21 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
 from uuid import uuid4
-from device_service.db import table
-from device_service.models.Device import DeviceCreate, DeviceResponse, DeviceUpdate
+from db import table
+from models.Device import DeviceCreate, DeviceResponse, DeviceUpdate
 
 
 deviceRouter = APIRouter()
 
 
 #Create new device
-@deviceRouter.post("/device", response_model=DeviceResponse)
+@deviceRouter.post("/devices", response_model=DeviceResponse)
 async def create_device(device: DeviceCreate):
     device_id=str(uuid4())
-    device={"id": device_id, **device.model_dump()}
-    table.put_item(Item=device)
-    return device
-
+    device_item={"id": device_id, **device.model_dump()}
+    print("Saving item to DynamoDB:", device_item)
+    table.put_item(Item=device_item)
+    return device_item
 
 #Get all devices
 @deviceRouter.get("/devices", response_model=List[DeviceResponse])

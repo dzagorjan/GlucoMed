@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from device_service.routers import devices
+from routers import devices
 
 
 app = FastAPI()
