@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from typing import List
 from uuid import uuid4
 from decimal import Decimal
+from datetime import datetime
 from db import table
 from models.Reading import ReadingCreate, ReadingResponse, ReadingUpdate
 
@@ -22,12 +23,6 @@ async def create_reading(reading: ReadingCreate):
 
     table.put_item(Item=reading_data)
     return reading_data
-
-    #reading_id=str(uuid4())
-    #reading_item={"id": reading_id, **reading.model_dump()}
-    #print("Saving item to DynamoDB:", reading_item)
-    #table.put_item(Item=reading_item)
-    #return reading_item
 
 
 #Get all readings
@@ -58,6 +53,12 @@ async def update_reading(reading_id: str, reading_update: ReadingUpdate):
 
     # Update only sent fields 
     updated_data = reading_update.model_dump(exclude_unset=True)
+
+    if "glucose_level" in updated_data and isinstance(updated_data["glucose_level"], float):
+        updated_data["glucose_level"] = Decimal(str(updated_data["glucose_level"])) 
+    if "timestamp" in updated_data and isinstance(updated_data["timestamp"], datetime):
+        updated_data["timestamp"] = updated_data["timestamp"].isoformat()
+   
     updated_reading = {**existing, **updated_data}
     table.put_item(Item=updated_reading)
 
