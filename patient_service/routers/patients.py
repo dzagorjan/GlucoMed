@@ -55,6 +55,8 @@ async def update_patient(patient_id: str, patient_update: PatientUpdate):
 
     # Update only sent fields 
     updated_data = patient_update.model_dump(exclude_unset=True)
+    if isinstance(updated_data.get("date_of_birth"), date):
+        updated_data["date_of_birth"] = updated_data["date_of_birth"].isoformat()
     updated_patient = {**existing, **updated_data}
     table.put_item(Item=updated_patient)
 
